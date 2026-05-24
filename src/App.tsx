@@ -1,13 +1,17 @@
-import './App.css'
+import "./App.css";
+import AuthShell from "./auth/AuthShell";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <h1 className='text-sm text-slate-900 font-bold'>
-        Hello
-      </h1>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/auth/login" replace/>}/>
+        <Route path="/auth/register" element={<AuthShell mode="register"/>}/>
+        <Route path="/auth/login" element={<AuthShell mode="login"/>}/>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
