@@ -5,52 +5,94 @@ import { User, Cloud, Mail, Lock, ArrowRight } from "lucide-react";
 import { Form, Button, Divider, Input, Checkbox, App as AntdApp } from "antd";
 import { useState } from "react";
 import type { AuthMode, AuthFormValues } from "../types/auth.types";
-import { loginUser, registerUser } from "../auth/authStorage";
+import { supabase } from "../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthShell({ mode }: { mode: "register" | "login" }) {
   const register = mode === "register";
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
+  const [switching, setSwitching] = useState(false);
   const { message } = AntdApp.useApp();
+  const navigate = useNavigate();
 
   const wait = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleAuthSwitch = async () => {
+    setSwitching(true);
+
+    await wait(1000);
+
+    navigate(register ? "/auth/login" : "/auth/register");
+
+    setSwitching(false);
+  };
   const handleFinish = async (values: AuthFormValues) => {
     setSubmitting(true);
 
     try {
       const normalized = normalizeAuthValues(values, mode);
 
-      await wait(600);
       console.log("Normalized auth values:", normalized);
       if (register) {
-        await registerUser({
-          fullName: normalized.fullName!,
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: normalized.email,
+          password: normalized.password,
+          options: {
+            data: {
+              fullName: normalized.fullName!,
+            },
+          },
+        });
+
+        if (signUpError) {
+          console.error("Error signiing up:", signUpError?.message);
+          message.error({
+            content: signUpError.message,
+            duration: 4,
+          });
+          return;
+        }
+
+        message.success({
+          content: "Account created successfully. Please log in",
+          duration: 4,
+        });
+
+        await wait(600);
+        setSwitching(true);
+        navigate("/auth/login");
+        setSwitching(false);
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email: normalized.email,
           password: normalized.password,
         });
 
-        message.success("Welcome Onboard, Mate!");
-      } else {
-        await loginUser({
-          email: normalized.email,
-          password: normalized.password,
+        if (signInError) {
+          console.error("Error signiing up:", signInError?.message);
+          message.error({
+            duration: 4,
+            content: signInError.message,
+          });
+          return;
+        }
+
+        message.success({
+          duration: 1,
+          content: "Welcome Back!",
         });
+
+        await wait(600);
+        setSwitching(true);
+        navigate("/dashboard");
+        setSwitching(false);
       }
     } catch (error) {
-      const authError = error as { statusCode?: number; message?: string };
-
-      if (authError.statusCode === 409) {
-        form.setFields([
-          {
-            name: "email",
-            errors: [authError.message ?? "Email alreay exists"],
-          },
-        ]);
-      }
       message.error({
         duration: 4,
-        content: authError.message ?? "Something went wrong. Please try again.",
+        content: "Something went wrong. Please try again.",
       });
     } finally {
       setSubmitting(false);
@@ -66,6 +108,19 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
       terms: Boolean(values.terms),
       mode,
     };
+  }
+
+  if (switching) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-(--neutral)">
+        <div className="relative h-20 w-20 animate-spin gap-10">
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 h-5.5 w-5.5 rounded-full bg-(--primary)"></div>
+          <div className="h-5.5 w-5.5 absolute left-1/2 -translate-x-1/2 bottom-0 rounded-full bg-(--primary)"></div>
+          <div className="h-5.5 w-5.5 absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-slate-300"></div>
+          <div className="h-5.5 w-5.5 absolute animate-spin right-0 -translate-y-1/2 top-1/2 rounded-full bg-slate-300"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -93,17 +148,17 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
                 CloudFinance
               </div>
               <h2
-                className={`font-bold text-xl text-slate-950 text-center md:text-left`}
+                className={`font-bold text-2xl text-slate-950 text-center md:text-left`}
               >
                 {register ? "Create Account" : "Welcome Back"}
               </h2>
 
-              <p
+              <div
                 className={` text-center leading-relaxed text-slate-600 md:text-left ${register ? "text-sm" : "mt-2 text-base"}`}
               >
                 Manage your cloud infrastructure spending with ease and
                 precision
-              </p>
+              </div>
             </div>
             {register && (
               <div className="flex flex-col gap-1.5">
@@ -128,7 +183,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
                       />
                     }
                     // pattern="/^[a-zA-Z\s]+$"
-                    className="w-full rounded-sm border border-slate-200 bg-white text-sm focus:outline-green-500 hover:border-(--primary)! focus-within:border-(--primary)!"
+                    className="w-full pl-5 pr-4 py-2 border border-slate-200 rounded-sm text-sm focus:outline-green-500 flex gap-2"
                     type="text"
                     name="name"
                     id="fullname"
@@ -154,14 +209,14 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
                 ]}
               >
                 <Input
-                  className="w-full rounded-sm border border-slate-200 bg-white text-sm focus:outline-green-500 hover:border-(--primary)! focus-within:border-(--primary)!"
+                  className="w-full pl-5 pr-4 py-2 border border-slate-200 rounded-sm text-sm focus:outline-green-500 flex gap-2"
                   name="email"
                   type="text"
                   id="email"
                   size={register ? "small" : "large"}
                   prefix={
                     <Mail
-                      className="text-slate-300"
+                      className="text-slate-400"
                       size={register ? 16 : 20}
                     />
                   }
@@ -276,11 +331,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
           >
             {register ? "Already have an account?" : "Don't have an account?"}
             <button
-              onClick={() =>
-                (window.location.href = register
-                  ? "/auth/login"
-                  : "/auth/register")
-              }
+              onClick={handleAuthSwitch}
               className="font-medium cursor-pointer hover:underline hover:text-(--tertiary)! text-base text-(--primary)! mt-2!"
             >
               {register ? "Log In" : "Sign Up"}
