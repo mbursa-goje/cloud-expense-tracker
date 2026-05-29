@@ -13,6 +13,7 @@
     "@ant-design/icons": "^6.2.3",
     "@supabase/supabase-js": "^2.106.1",
     "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/react-query": "^5.100.14",
     "antd": "^6.4.3",
     "lucide-react": "^1.14.0",
     "rc-queue-anim": "^2.0.0",
