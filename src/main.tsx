@@ -4,7 +4,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-
+import { ScreenProvider } from "./context/ScreenSize.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,13 +19,16 @@ createRoot(document.getElementById("root")!).render(
           colorLink: "var(--primary)",
           colorLinkHover: "var(--tertiary)",
           borderRadius: 6,
-          controlOutline: "color-mix(in srgb, var(--primary) 20%, transparent)",
+          controlOutline: "var(--primary)",
+          // colorBgContainer: "#f0fdf4"
         },
       }}
     >
-     <AntdApp>
-       <App />
-     </AntdApp>
+      <AntdApp>
+        <ScreenProvider>
+          <App />
+        </ScreenProvider>
+      </AntdApp>
     </ConfigProvider>
   </StrictMode>,
 );
