@@ -18,6 +18,15 @@ label {
   font-size: small;
 }
 
+.ant-menu {
+  background: #fafafa !important;
+}
+.ant-menu-item-content {
+    gap: -2px !important;
+  }
+  .ant-menu-item .ant-menu-item-icon{
+    margin-inline-end: -2px !important;
+  }
 .ant-form-item-label {
   padding-bottom: 1px !important;
 }
@@ -71,28 +80,30 @@ label {
 }
 
 .ant-menu-item-content {
-    gap: 6px !important;
-  }
+  gap: 2px !important;
+}
 
 @media (max-width: 768px) {
   .ant-menu-horizontal .ant-menu-item,
-  .ant-menu-horizontal .ant-menu-submenu{
+  .ant-menu-horizontal .ant-menu-submenu {
     padding-inline: 16px !important;
     height: 32px !important;
     padding-top: 0px !important;
     line-height: 32px !important;
   }
 
-  .ant-menu-horizontal{
+  .ant-menu-horizontal {
     min-height: 32px !important;
     line-height: 36px !important;
+    display: flex !important;
+    justify-content: center !important;
   }
   .ant-menu-horizontal > .ant-menu-item::after,
-  .ant-menu-horizontal > .ant-menu-submenu::after{
-    border-bottom:  none !important;
+  .ant-menu-horizontal > .ant-menu-submenu::after {
+    border-bottom: none !important;
   }
 
-  .ant-menu-horizontal > .ant-menu-item-selected::after{
+  .ant-menu-horizontal > .ant-menu-item-selected::after {
     border-bottom: 2px solid var(--primary) !important;
   }
 
@@ -102,12 +113,15 @@ label {
     right: 18.5;
   }
   .ant-menu-item {
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
   .ant-menu-item-content {
-    gap: 6px !important;
+    gap: 2px !important;
   }
-  .menu-wrapper:hover{
+  .ant-menu-item .ant-menu-item-icon{
+    margin-inline-end: 2px !important;
+  }
+  .menu-wrapper:hover {
     border-bottom: none;
     border-bottom-color: var(--primary) !important;
   }
@@ -124,3 +138,28 @@ label {
     border-bottom-color: var(--primary) !important;
   }
 }
+
+.ant-table-thead > tr > th::before {
+  display: none;
+}
+
+.ant-menu-horizontal > .ant-menu-item {
+  flex: 1 1 0 !important;
+  text-align: center !important;
+}
+
+.ant-menu{
+  background-color: #fafafa !important;
+}
+
+.ant-table-tbody > tr:nth-child(even) > td{
+  background-color: #fafafa !important;
+}
+
+/* .ant-table-tbody > tr:nth-child(even):hover > td{
+  background-color: #ffffff !important;
+} */
+
+
+
+
