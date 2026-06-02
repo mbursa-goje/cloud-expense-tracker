@@ -10,7 +10,7 @@ export default function ProtectedRoute({children, session, authReady} : Protecte
         return null;
     }
     if(!session){
-        return <Navigate to="/auth/login"/>
+        return <Navigate to="/auth/login" replace/>
     }
     return <>{children}</>;
 }

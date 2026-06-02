@@ -48,7 +48,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute authReady={authReady} session={session}>
+            <ProtectedRoute authReady={!authReady} session={session}>
               <DashboardHome session={session} />
             </ProtectedRoute>
           }
