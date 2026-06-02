@@ -4,6 +4,7 @@ import ExpensesPage from "./pages/dashboard/ExpensesPage";
 import CloudAssetsPage from "./pages/dashboard/CloudAssetsPage";
 import ReportsPage from "./pages/dashboard/ReportsPage";
 import AuthShell from "./auth/AuthShell";
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import DashboardOverview from "./pages/dashboard/DashboardOverview";
 import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -11,41 +12,31 @@ import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 
 function App() {
-  const [session, setSession] = useState<any>(null);
-  const [authReady, setAuthReady] = useState<boolean>(false);
-  const mrWait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-  const fetchSession = async () => {
-    try {
-      const [currentSession] = await Promise.all([
-        supabase.auth.getSession(),
-        mrWait(600),
-      ]);
-      setSession(currentSession.data.session);
-      console.log(currentSession.data.session);
-    } catch (error) {
-      console.error("Error fetching session:", error);
-    } finally {
-      setAuthReady(true);
+  const queryClient = useQueryClient();
+  const {data: session, isLoading: authLoading} = useQuery({
+    queryKey: ["supabase-session"],
+    queryFn: async () => {
+      const {data, error} = await supabase.auth.getSession();
+      if (error) {throw error}
+      return data.session;
     }
-  };
+  })
+  const [authReady, setAuthReady] = useState<boolean>(false);
+  // const mrWait = (ms: number) =>
+  //   new Promise((resolve) => setTimeout(resolve, ms));
+
 
   useEffect(() => {
-    fetchSession();
-
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        // if (_event === "INITIAL_SESSION") {
-        //   return;
-        // }
-        setSession(session);
+        queryClient.setQueryData(["supabase-session"], session)
       },
     );
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [queryClient]);
 
   return (
     <BrowserRouter>
