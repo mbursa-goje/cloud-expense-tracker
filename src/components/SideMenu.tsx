@@ -1,19 +1,22 @@
 import { Menu, ConfigProvider, Badge } from "antd";
 import { Mail, Bell } from "lucide-react";
 import { LayoutDashboard, CloudIcon, FileText, Banknote } from "lucide-react";
-import {} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useScreenSize } from "../context/useScreenSize";
 import "../index.css";
 
 export default function SideMenu() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { isMobile } = useScreenSize();
   return (
     <div
-      className={`flex md:pt-3 gap-0 flex-col w-full  ${isMobile ? `h-4` : `h-screen border-r border-slate-200`} top-0 left-0`}
+      className={`flex md:pt-3 gap-0 flex-col w-full  ${isMobile ? `h-5` : `h-screen border-r border-slate-200 bg-[#fafafa]`} top-0 left-0`}
     >
       <div className="flex justify-between items-center">
         <div
-          className={`items-center text-center md:text-left ${isMobile ? "text-sm" : ""} text-base md:pl-3 flex md:text-lg font-bold gap-1 text-(--primary) w-fit rounded-md border border-white/10 px-1 md:py-0.5`}
+          className={`items-center text-center text-base md:pl-3 flex md:text-lg font-bold gap-1 text-(--primary) w-fit rounded-md border border-white/10 px-1 md:py-0.5`}
         >
           CloudFinance
         </div>
@@ -24,7 +27,7 @@ export default function SideMenu() {
             size="small"
             className="cursor-pointer"
           >
-            <Mail size={16}></Mail>
+            <Mail size={18}></Mail>
           </Badge>
           <Badge
             color={"green"}
@@ -32,7 +35,7 @@ export default function SideMenu() {
             count={1}
             className="cursor-pointer"
           >
-            <Bell size={16}></Bell>
+            <Bell size={18}></Bell>
           </Badge>
         </div>
       </div>
@@ -51,30 +54,38 @@ export default function SideMenu() {
       <div
         className={`flex md:flex-col md:items-center ${isMobile ? "border-b border-slate-300" : ""} gap-0 w-full`}
       >
-        <div className="flex-1 flex justify-center -pt-1">
+        <div className="flex-1 justify-center -pt-1 hidden md:flex">
           <ConfigProvider
             theme={{
               components: {
                 Menu: {
                   fontSize: 14,
-                  itemMarginInline: isMobile ? 0 : undefined,
+                  itemMarginInline: 0,
+                  itemPaddingInline: 12,
                   itemColor: "#4b5563",
-                  itemSelectedColor: "#ffffff",
-                  itemSelectedBg: "#6ee435",
-                  itemHoverColor: "#047857",
+                  itemBg: "#fafafa",
                   itemHoverBg: "#ecfdf5",
+                  itemSelectedBg: "#6ee435",
                   itemActiveBg: "#ecfdf5",
-                  itemBorderRadius: 1,
+                  itemSelectedColor: "#ffffff",
+
+                  itemHoverColor: "#047857",
+
+                  itemBorderRadius: 0,
                 },
               },
             }}
           >
             <Menu
+              inlineIndent={8}
               disabledOverflow={true}
-              className="text-sm md:text-base"
+              selectedKeys={[location.pathname]}
+              className="text-sm md:text-base hidden md:block bg-[#fafafa]"
               mode={isMobile ? "horizontal" : "inline"}
               style={{ borderInlineEnd: "none", width: "100%" }}
-              onClick={(item) => {}}
+              onClick={({ key }) => {
+                navigate(key);
+              }}
               items={[
                 {
                   label: "Dashboard",
