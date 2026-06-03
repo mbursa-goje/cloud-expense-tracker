@@ -12,9 +12,9 @@ export default function SideMenu() {
   const { isMobile } = useScreenSize();
   return (
     <div
-      className={`flex md:pt-3 gap-0 flex-col w-full  ${isMobile ? `h-5` : `h-screen border-r border-slate-200 bg-[#fafafa]`} top-0 left-0`}
+      className={`bg-[#fafafa] flex md:pt-3 gap-1 flex-col w-full  ${isMobile ? `fixed z-50 ` : `h-screen border-r border-slate-200 `} top-0 left-0`}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center bg-[#fafafa]">
         <div
           className={`items-center text-center text-base md:pl-3 flex md:text-lg font-bold gap-1 text-(--primary) w-fit rounded-md border border-white/10 px-1 md:py-0.5`}
         >
@@ -52,9 +52,9 @@ export default function SideMenu() {
           <div className="flex items-center gap-1 text-slate-700 whitespace-nowrap"><FileText size={15}/>Reports</div>
           </div> */}
       <div
-        className={`flex md:flex-col md:items-center ${isMobile ? "border-b border-slate-300" : ""} gap-0 w-full`}
+        className={`bg-[#fafafa] flex md:flex-col md:items-center ${isMobile ? "w-full" : ""} gap-0 w-full`}
       >
-        <div className="flex-1 justify-center -pt-1 hidden md:flex">
+        <div className={`flex-1 flex justify-start -pt-1`}>
           <ConfigProvider
             theme={{
               components: {
@@ -77,10 +77,10 @@ export default function SideMenu() {
             }}
           >
             <Menu
-              inlineIndent={8}
+              // inlineIndent={8}
               disabledOverflow={true}
               selectedKeys={[location.pathname]}
-              className="text-sm md:text-base hidden md:block bg-[#fafafa]"
+              className="text-sm md:text-base hidden md:block bg-[#fafafa] text-left"
               mode={isMobile ? "horizontal" : "inline"}
               style={{ borderInlineEnd: "none", width: "100%" }}
               onClick={({ key }) => {

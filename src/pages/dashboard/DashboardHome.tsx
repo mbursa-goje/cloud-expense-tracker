@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import { useScreenSize } from "../../context/useScreenSize";
 import SideMenu from "../../components/SideMenu";
 import PageContent from "../../components/PageContent";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 
 type DashboardProps = {
   session: any;
@@ -24,9 +24,9 @@ export default function DashboardHome({ session }: DashboardProps) {
           <PageContent />
         </main>
       </div>
-      <footer className="md:hidden fixed bottom-0 left-0 h-10 shrink-0 z-20 w-full">
+      {/* <footer className="md:hidden fixed bottom-0 left-0 h-10 shrink-0 z-20 w-full">
         <Footer />
-      </footer>
+      </footer> */}
     </div>
   );
 }
