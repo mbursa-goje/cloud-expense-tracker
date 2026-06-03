@@ -1,17 +1,26 @@
-import { Table, Input } from "antd";
+import { Table, Input, Modal } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { useQuery } from "@tanstack/react-query";
-import { useState} from "react";
-import { Search} from "lucide-react";
-import {fetchTransactions, type FetchTransactionsArgs} from "../api/transactions"
-import FilterButton  from '../components/FilterButton'
-
+import { useState, type ReactNode } from "react";
+import { Search } from "lucide-react";
+import {
+  fetchTransactions,
+  type FetchTransactionsArgs,
+} from "../api/transactions";
+import FilterButton from "../components/FilterButton";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import type { Transaction } from "@/types/page.content";
+import { useDeleteTransactions } from "../api/transactions";
+// import { supabase } from "@/lib/supabase";
 
 // const titles = ['DATE', 'DESCRIPTION', 'CATEGORY', 'AMOUNT', 'STATUS', 'ACTIONS'];
 
 export default function DashboardTable() {
-  const [filters, setFilters] = useState<FetchTransactionsArgs>({})
-  const { data: dataSource = [], isLoading } = useQuery({
-    queryKey: ["transactions", filters.search, filters.category, filters],
+  const [isEditing, setIsEditing] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [filters, setFilters] = useState<FetchTransactionsArgs>({});
+  const { data: dataSource = [], isLoading } = useQuery<Transaction[]>({
+    queryKey: ["transactions", filters],
     queryFn: () => fetchTransactions(filters),
   });
   // const filteredData = useMemo(() => {
@@ -27,7 +36,7 @@ export default function DashboardTable() {
   // }, [search, dataSource]);
   // const [loading, setLoading] = useState(false);
   // const [dataSource, setDataSource] = useState<TransactionRow[]>([])
-  const rawColumns = [
+  const rawColumns: ColumnsType<Transaction> = [
     {
       title: "DATE",
       dataIndex: "date",
@@ -57,23 +66,60 @@ export default function DashboardTable() {
     {
       title: "ACTIONS",
       dataIndex: "actions",
+      align: "center",
       key: "actions",
-      render: () => (
-        <div className="flex gap-3">
-          <button className="text-(--primary)">Edit</button>
-          <button className="text-red-600">Delete</button>
-        </div>
-      ),
+      render: (_, record) => {
+        return (
+          <div className="flex gap-3 justify-center w-full">
+            <EditOutlined
+              style={{ color: "green", cursor: hover ? "pointer" : "" }}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+            />
+            <DeleteOutlined
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+              style={{ color: "red", cursor: hover ? "pointer" : "" }}
+              onClick={() => handleDelete(record.id)}
+            />
+          </div>
+        );
+      },
     },
   ];
 
-  const columns = rawColumns.map((col) => ({
+  const deleteMutation = useDeleteTransactions();
+
+  const handleDelete = (id: string) => {
+    Modal.confirm({
+      title: "Delete Transaction?",
+      okText: "Yes",
+      okType: "danger",
+      onOk: () => deleteMutation.mutateAsync(id),
+    });
+  };
+
+  const handleEdit = (id: string) => {
+    setIsEditing(true)
+  };
+
+  const columns: ColumnsType<Transaction> = rawColumns.map((col) => ({
     ...col,
-    title: <span className="text-slate-600 font-semibold">{col.title}</span>,
-    className: `text-slate-700`,
+
+    title: <span>{col.title as ReactNode}</span>,
+
+    onCell: () => ({
+      className: "text-slate-700",
+    }),
+
+    onHeaderCell: () => ({ className: "bg-slate-50" }),
   }));
 
-  
+  // const columns = rawColumns.map((col) => ({
+  //   ...col,
+  //   title: <span className="text-slate-600 font-semibold">{col.title}</span>,
+  //   className: `text-slate-700`,
+  // }));
 
   // const fetchdata = async() => {
   //   try{
@@ -118,11 +164,20 @@ export default function DashboardTable() {
               name="search"
               className="h-7! p-3"
               value={filters.search ?? ""}
-              onChange={(event) => setFilters((prev) => ({...prev, search: event.target.value || undefined}))}
+              onChange={(event) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  search: event.target.value || undefined,
+                }))
+              }
             ></Input>
           </div>
-        
-        <FilterButton onClick={(newFilter) => setFilters((prev) => ({...prev, ...newFilter}))}/>
+
+          <FilterButton
+            onClick={(newFilter) =>
+              setFilters((prev) => ({ ...prev, ...newFilter }))
+            }
+          />
         </div>
       </div>
       <Table
@@ -131,6 +186,13 @@ export default function DashboardTable() {
         loading={isLoading}
         rowKey="id"
       />
+      <Modal
+      visible={isEditing}
+      onCancel={() => setIsEditing(false)}
+      onOk={() => setIsEditing(false)}
+      title="Edit Transaction">
+
+      </Modal>
     </div>
   );
 }
