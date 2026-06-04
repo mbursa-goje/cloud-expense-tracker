@@ -4,15 +4,15 @@ import ExpensesPage from "./pages/dashboard/ExpensesPage";
 import CloudAssetsPage from "./pages/dashboard/CloudAssetsPage";
 import ReportsPage from "./pages/dashboard/ReportsPage";
 import AuthShell from "./auth/AuthShell";
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery} from '@tanstack/react-query'
 import DashboardOverview from "./pages/dashboard/DashboardOverview";
 import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 
 function App() {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const {data: session, isLoading: authLoading} = useQuery({
     queryKey: ["supabase-session"],
     queryFn: async () => {
@@ -21,22 +21,22 @@ function App() {
       return data.session;
     }
   })
-  const [authReady, setAuthReady] = useState<boolean>(false);
+  
   // const mrWait = (ms: number) =>
   //   new Promise((resolve) => setTimeout(resolve, ms));
 
 
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        queryClient.setQueryData(["supabase-session"], session)
-      },
-    );
+  // useEffect(() => {
+  //   const { data: authListener } = supabase.auth.onAuthStateChange(
+  //     (_event, session) => {
+  //       queryClient.setQueryData(["supabase-session"], session)
+  //     },
+  //   );
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [queryClient]);
+  //   return () => {
+  //     authListener.subscription.unsubscribe();
+  //   };
+  // }, [queryClient]);
 
   return (
     <BrowserRouter>
@@ -48,7 +48,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute authReady={!authReady} session={session}>
+            <ProtectedRoute authReady={!authLoading} session={session ?? null}>
               <DashboardHome session={session} />
             </ProtectedRoute>
           }
