@@ -2,7 +2,7 @@ import { Menu, ConfigProvider, Badge } from "antd";
 import { Mail, Bell } from "lucide-react";
 import { LayoutDashboard, CloudIcon, FileText, Banknote } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useScreenSize } from "../context/useScreenSize";
+import { useScreenSize } from "../context/screen/use-screen-size";
 import "../index.css";
 import type { Session } from "@supabase/supabase-js";
 

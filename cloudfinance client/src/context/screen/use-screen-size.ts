@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ScreenSizeContext } from './ScreenSize';
+import { ScreenSizeContext } from './screen-context';
 
 export function useScreenSize(){
     const context = useContext(ScreenSizeContext);

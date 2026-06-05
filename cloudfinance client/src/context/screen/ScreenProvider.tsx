@@ -1,10 +1,8 @@
-import { createContext, useEffect, useState, type PropsWithChildren } from "react";
+import { useEffect, useState, type PropsWithChildren } from "react";
+import {ScreenSizeContext} from './screen-context'
 
-export const ScreenSizeContext = createContext<
-  { isMobile: boolean } | undefined
->(undefined);
 
-export function ScreenProvider({ children, }: PropsWithChildren) {
+export function ScreenProvider({ children }: PropsWithChildren) {
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { ScreenProvider } from "./context/ScreenSize.tsx";
+import { ScreenProvider } from "./context/screen/ScreenProvider.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
