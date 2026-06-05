@@ -58,16 +58,3 @@ export function openAuthDb(): Promise<IDBDatabase>{
         }
     })
 }
-
-export async function findUserByEmail(email:  string){
-}
-
-export async function registerUser(values:{
-    fullName: string;
-    email: string;
-    password: string;
-}) {}
-
-export async function loginUser(values: {email: string; password: string}){
-
-}

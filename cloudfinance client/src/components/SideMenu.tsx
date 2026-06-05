@@ -4,8 +4,9 @@ import { LayoutDashboard, CloudIcon, FileText, Banknote } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useScreenSize } from "../context/useScreenSize";
 import "../index.css";
+import type { Session } from "@supabase/supabase-js";
 
-export default function SideMenu() {
+export default function SideMenu({ session }: { session: Session }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,6 +22,9 @@ export default function SideMenu() {
           CloudFinance
         </div>
         <div className={`pr-4 pt-2  md:pr-8 gap-2 md:hidden items-center flex`}>
+          <div className="md:hidden text-(--primary) text-base font-semibold">
+            {session.user.user_metadata?.fullName ?? "User"}
+          </div>
           <Badge
             color={"green"}
             count={1}
@@ -52,7 +56,7 @@ export default function SideMenu() {
           <div className="flex items-center gap-1 text-slate-700 whitespace-nowrap"><FileText size={15}/>Reports</div>
           </div> */}
       <div
-        className={`bg-[#fafafa] flex md:flex-col md:items-center ${isMobile ? "w-full" : ""} gap-0 w-full`}
+        className={` flex md:flex-col md:items-center ${isMobile ? "w-full" : ""} gap-0 w-full`}
       >
         <div className={`flex-1 flex justify-start -pt-1`}>
           <ConfigProvider

@@ -14,11 +14,11 @@ export default function DashboardHome({ session }: DashboardProps) {
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen">
       <aside className={`${isMobile ? 'w-full h-auto fixed z-50' : 'w-45 h-full'} left-0 top-0 shrink-0`}>
-        <SideMenu />
+        <SideMenu session={session} />
       </aside>
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <header className="">
-          <Header />
+          <Header session={session}/>
         </header>
         <main className="flex-1 overflow-y-auto">
           <PageContent />

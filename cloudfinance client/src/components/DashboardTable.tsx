@@ -99,9 +99,9 @@ export default function DashboardTable() {
     });
   };
 
-  const handleEdit = (id: string) => {
-    setIsEditing(true)
-  };
+  // const handleEdit = (id: string) => {
+  //   setIsEditing(true)
+  // };
 
   const columns: ColumnsType<Transaction> = rawColumns.map((col) => ({
     ...col,

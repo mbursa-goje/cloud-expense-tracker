@@ -164,9 +164,9 @@ label {
   text-align: center !important;
 }
 
-.ant-menu {
+/* .ant-menu {
   background-color: #fafafa !important;
-}
+} */
 
 .ant-table-tbody > tr:nth-child(even) > td {
   background-color: #fafafa !important;
