@@ -1,15 +1,11 @@
 import Header from "../../components/Header";
-
-import { useScreenSize } from "../../context/useScreenSize";
+import type { Session } from "@supabase/supabase-js";
+import { useScreenSize } from "../../context/screen/use-screen-size";
 import SideMenu from "../../components/SideMenu";
 import PageContent from "../../components/PageContent";
 // import Footer from "../../components/Footer";
 
-type DashboardProps = {
-  session: any;
-};
-
-export default function DashboardHome({ session }: DashboardProps) {
+export default function DashboardHome({ session }: {session: Session}) {
   const { isMobile } = useScreenSize();
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen">
