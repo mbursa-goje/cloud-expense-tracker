@@ -1,5 +1,5 @@
 import { Menu, ConfigProvider, Badge } from "antd";
-import { Mail, Bell } from "lucide-react";
+import { Mail, Bell, User2 } from "lucide-react";
 import { LayoutDashboard, CloudIcon, FileText, Banknote } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useScreenSize } from "../context/screen/use-screen-size";
@@ -17,30 +17,45 @@ export default function SideMenu({ session }: { session: Session }) {
     >
       <div className="flex justify-between items-center bg-[#fafafa]">
         <div
-          className={`items-center text-center text-base md:pl-3 flex md:text-lg font-bold gap-1 text-(--primary) w-fit rounded-md border border-white/10 px-1 md:py-0.5`}
+          className={`items-center text-center text-base md:pl-3  flex md:text-lg font-bold gap-1 text-(--primary) w-fit rounded-md border border-white/10 px-1 md:py-0.5`}
         >
           CloudFinance
         </div>
-        <div className={`pr-4 pt-2  md:pr-8 gap-2 md:hidden items-center flex`}>
-          <div className="md:hidden text-(--primary) text-base font-semibold">
-            {session.user.user_metadata?.fullName ?? "User"}
+        <div className={`pr-4 pt-2  md:pr-8 gap-3 md:hidden items-center flex`}>
+          <div className="md:hidden text-(--primary) text-base  gap-1 font-semibold flex items-center">
+            <div>
+              <User2 size={16} className="text-(--primary)" />
+            </div>
+            <div>{session.user.user_metadata?.fullName ?? "User"}</div>
           </div>
-          <Badge
-            color={"green"}
-            count={1}
-            size="small"
-            className="cursor-pointer"
-          >
-            <Mail size={18}></Mail>
-          </Badge>
-          <Badge
-            color={"green"}
-            size="small"
-            count={1}
-            className="cursor-pointer"
-          >
-            <Bell size={18}></Bell>
-          </Badge>
+
+          <div className="flex items-center gap-1">
+            <Badge
+              color={"green"}
+              count={1}
+              size="small"
+              className="cursor-pointer"
+            >
+              <Mail size={18}></Mail>
+            </Badge>
+            <Badge
+              color={"green"}
+              size="small"
+              count={1}
+              className="cursor-pointer"
+            >
+              <Bell size={18}></Bell>
+            </Badge>
+          </div>
+        </div>
+      </div>
+
+      <div className="md:flex ml-5 hidden mb-2.5 mt-2 items-center gap-1">
+        <div className="bg-[#fafafa] ">
+          <User2 size={16} className="text-(--primary)" />
+        </div>
+        <div className="text-base font-semibold text-(--primary) flex items-center text-left ">
+          {session?.user.user_metadata?.fullName ?? "User"}
         </div>
       </div>
       {/* <div className="flex items-start gap-4">
