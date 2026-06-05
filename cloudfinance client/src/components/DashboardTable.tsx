@@ -108,11 +108,7 @@ export default function DashboardTable() {
 
     title: <span>{col.title as ReactNode}</span>,
 
-    onCell: () => ({
-      className: "text-slate-700",
-    }),
-
-    onHeaderCell: () => ({ className: "bg-slate-50" }),
+    className: "text-slate-700",
   }));
 
   // const columns = rawColumns.map((col) => ({
@@ -187,12 +183,11 @@ export default function DashboardTable() {
         rowKey="id"
       />
       <Modal
-      visible={isEditing}
-      onCancel={() => setIsEditing(false)}
-      onOk={() => setIsEditing(false)}
-      title="Edit Transaction">
-
-      </Modal>
+        visible={isEditing}
+        onCancel={() => setIsEditing(false)}
+        onOk={() => setIsEditing(false)}
+        title="Edit Transaction"
+      ></Modal>
     </div>
   );
 }
