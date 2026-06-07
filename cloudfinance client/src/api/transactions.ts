@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Transaction } from "@/types/page.content";
 export interface FetchTransactionsArgs {
   category?: string;
   search?: string;
@@ -49,12 +50,13 @@ export function useDeleteTransactions() {
   });
 }
 
-export const editTransaction = async (id: string) => {
+export const editTransaction = async (
+  id: string,
+  updates: Partial<Transaction>,
+) => {
   const { data, error } = await supabase
     .from("transactions")
-    .update({
-      status: "Completed",
-    })
+    .update(updates)
     .eq("id", id);
   if (error) {
     console.error(error);
@@ -66,9 +68,17 @@ export const editTransaction = async (id: string) => {
 export function useEditTransactions() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: editTransaction,
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<Transaction>;
+    }) => editTransaction(id, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
     },
   });
 }
