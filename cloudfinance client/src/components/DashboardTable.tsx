@@ -1,10 +1,11 @@
-import { Table, Input, Modal } from "antd";
+import { Table, Input, Modal, Tooltip, Form } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { Search } from "lucide-react";
 import {
   fetchTransactions,
+  useEditTransactions,
   type FetchTransactionsArgs,
 } from "../api/transactions";
 import FilterButton from "../components/FilterButton";
@@ -16,8 +17,11 @@ import { useDeleteTransactions } from "../api/transactions";
 // const titles = ['DATE', 'DESCRIPTION', 'CATEGORY', 'AMOUNT', 'STATUS', 'ACTIONS'];
 
 export default function DashboardTable() {
+  const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
-  const [hover, setHover] = useState(false);
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
+  // const [hover, setHover] = useState(false);
   const [filters, setFilters] = useState<FetchTransactionsArgs>({});
   const { data: dataSource = [], isLoading } = useQuery<Transaction[]>({
     queryKey: ["transactions", filters],
@@ -71,17 +75,18 @@ export default function DashboardTable() {
       render: (_, record) => {
         return (
           <div className="flex gap-3 justify-center w-full">
-            <EditOutlined
-              style={{ color: "green", cursor: hover ? "pointer" : "" }}
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-            />
-            <DeleteOutlined
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-              style={{ color: "red", cursor: hover ? "pointer" : "" }}
-              onClick={() => handleDelete(record.id)}
-            />
+            <Tooltip title="Edit Transaction">
+              <EditOutlined
+                style={{ color: "green", cursor: "pointer" }}
+                onClick={() => handleEdit(record)}
+              />
+            </Tooltip>
+            <Tooltip title="Delete transaction">
+              <DeleteOutlined
+                style={{ color: "red", cursor: "pointer" }}
+                onClick={() => handleDelete(record.id)}
+              />
+            </Tooltip>
           </div>
         );
       },
@@ -92,16 +97,36 @@ export default function DashboardTable() {
 
   const handleDelete = (id: string) => {
     Modal.confirm({
-      title: "Delete Transaction?",
+      title: "Are you sure you want to delete this transaction?",
       okText: "Yes",
       okType: "danger",
       onOk: () => deleteMutation.mutateAsync(id),
     });
   };
 
-  // const handleEdit = (id: string) => {
-  //   setIsEditing(true)
-  // };
+  const editMutation = useEditTransactions();
+  const handleEdit = (record: Transaction) => {
+    console.log("clicked:", record);
+    form.setFieldsValue({
+      description: record.description,
+      category: record.category,
+    });
+    setIsEditing(true);
+    setEditingTransaction(record);
+  };
+
+  const handleSave = async () =>  {
+    if (!editingTransaction) return;
+
+    const values = form.getFieldsValue();
+    
+    await editMutation.mutateAsync({
+      id: editingTransaction.id,
+      updates: values,
+    })
+
+    setIsEditing(false);
+  }
 
   const columns: ColumnsType<Transaction> = rawColumns.map((col) => ({
     ...col,
@@ -183,11 +208,41 @@ export default function DashboardTable() {
         rowKey="id"
       />
       <Modal
-        visible={isEditing}
+        open={isEditing}
         onCancel={() => setIsEditing(false)}
-        onOk={() => setIsEditing(false)}
+        onOk={handleSave}
         title="Edit Transaction"
-      ></Modal>
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+          label="Description"
+          name="description"
+          rules={[{required: true, message: "Description is required"}]}
+          >
+            <Input
+              // value={editingTransaction?.description ?? ""}
+              // onChange={(e) =>
+              //   setEditingTransaction((prev) =>
+              //     prev ? { ...prev, description: e.target.value } : prev,
+              //   )
+              // }
+            />
+          </Form.Item>
+          <Form.Item
+          label="Category"
+          name="category"
+          rules={[{required: true, message: "Category is required"}]}>
+            <Input
+              // value={editingTransaction?.category ?? ""}
+              // onChange={(e) =>
+              //   setEditingTransaction((prev) =>
+              //     prev ? { ...prev, category: e.target.value } : prev,
+              //   )
+              // }
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
