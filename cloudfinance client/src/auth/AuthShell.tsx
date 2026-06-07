@@ -96,6 +96,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
         duration: 4,
         content: "Something went wrong. Please try again.",
       });
+      console.log(error)
     } finally {
       setSubmitting(false);
     }
