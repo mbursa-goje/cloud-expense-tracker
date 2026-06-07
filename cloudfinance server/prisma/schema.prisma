@@ -1,12 +1,12 @@
 generator client {
   provider        = "prisma-client"
   output          = "../generated/prisma"
- previewFeatures = ["partialIndexes"]
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  schemas = ["auth", "public"]
+  provider = "postgresql"
+  schemas  = ["auth", "public"]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -497,6 +497,34 @@ model webauthn_credentials {
 
   @@index([user_id])
   @@schema("auth")
+}
+
+enum ExpenseStatus {
+  Paid
+  Pending
+
+  @@schema("public")
+}
+
+enum Category {
+  Computing
+  Database
+  Storage
+  Networking
+  Serverless
+
+  @@schema("public")
+}
+
+model Expense {
+  id           String        @id @default(uuid())
+  resourceName String
+  category     Category
+  billingDate  DateTime
+  monthlyCost  Decimal       @db.Decimal(10, 2)
+  status       ExpenseStatus
+
+  @@schema("public")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
