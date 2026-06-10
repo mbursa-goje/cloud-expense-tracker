@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useState, type ReactNode } from "react";
 import { Search } from "lucide-react";
 
-import FilterButton from "../components/FilterButton";
+import FilterButton from "../ui/FilterButton";
 // import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { DashboardTableProps } from "@/types/page.content";
 // import { useDeleteTransactions } from "../api/transactions";

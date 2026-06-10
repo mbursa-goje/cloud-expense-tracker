@@ -19,6 +19,8 @@ export function useSupabaseAuth(){
    useEffect(()=>{
     let isMounted = true;
 
+
+    // checks for an active user session
      const getInitialAuthSession = async () => {
         try {
         const { data: {session}, error} = await supabase.auth.getSession()
