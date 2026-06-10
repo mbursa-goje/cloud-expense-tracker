@@ -1,12 +1,9 @@
 import { supabase } from "../lib/supabase";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Transaction } from "@/types/page.content";
-export interface FetchTransactionsArgs {
-  category?: string;
-  search?: string;
-}
+import type { Transaction, QueryFilters } from "@/types/page.content";
 
-export const fetchTransactions = async (filters?: FetchTransactionsArgs) => {
+
+export const fetchTransactions = async (filters?: QueryFilters) => {
   let query = supabase
     .from("transactions")
     .select("id, user_id, date, description, category, amount, status")
@@ -35,7 +32,7 @@ export const deleteTransaction = async (id: string) => {
     .eq("id", id);
 
   if (error) {
-    console.error(error);
+    throw new Error(error.message)
   }
   return data;
 };
@@ -45,21 +42,26 @@ export function useDeleteTransactions() {
   return useMutation({
     mutationFn: deleteTransaction,
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({queryKey: ["transactions"]});
     },
+    onError: (error) => {
+      console.error("Delete failed:", error.message);
+    }
   });
 }
 
 export const editTransaction = async (
   id: string,
   updates: Partial<Transaction>,
-) => {
+): Promise<Transaction[] | null> => {
   const { data, error } = await supabase
     .from("transactions")
     .update(updates)
-    .eq("id", id);
+    .eq("id", id)
+    .select();
   if (error) {
     console.error(error);
+    return null
   }
 
   return data;
@@ -67,13 +69,14 @@ export const editTransaction = async (
 
 export function useEditTransactions() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<
+    Transaction[] | null,
+    Error,
+    {id: string; updates: Partial<Transaction>}
+  >({
     mutationFn: ({
       id,
       updates,
-    }: {
-      id: string;
-      updates: Partial<Transaction>;
     }) => editTransaction(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({
