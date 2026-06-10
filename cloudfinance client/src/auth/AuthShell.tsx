@@ -1,4 +1,5 @@
 // import { Link } from "react-router-dom";
+import {FcGoogle } from "react-icons/fc"
 import authImage from "/assets/auth.jpg";
 import "../index.css";
 import { User, Cloud, Mail, Lock, ArrowRight } from "lucide-react";
@@ -9,6 +10,17 @@ import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
 export default function AuthShell({ mode }: { mode: "register" | "login" }) {
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      },
+    });
+    if(error){
+      console.error(error);
+    }
+  }
   const register = mode === "register";
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
@@ -350,29 +362,12 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
             <Button
               size={register ? "middle" : "large"}
               className="flex flex-1 items-center justify-center hover:bg-slate-50 transition-colors gap-2 border border-slate-200 rounded-md text-sm font-medium cursor-pointer"
+              block
+              icon={<FcGoogle/>}
+              onClick={handleGoogleSignIn}
             >
-              {/* Google Icon */}
-              <svg
-                className={`${register ? "h-3 w-3" : "h-4 w-4"} fill-current`}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#EA4335"
-                  d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.33 0 3.323 2.69 1.34 6.623l3.926 3.142z"
-                />
-                <path
-                  fill="#4285F4"
-                  d="M23.49 12.275c0-.796-.073-1.564-.205-2.305H12v4.358h6.458c-.277 1.477-1.11 2.73-2.36 3.567l3.682 2.855c2.155-1.986 3.41-4.91 3.41-8.475z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.266 14.235L1.34 17.377C3.323 21.31 7.33 24 12 24c3.09 0 5.682-.995 7.577-2.705l-3.681-2.855c-1.077.714-2.455 1.141-3.896 1.141-4.734 0-8.023-3.132-9.458-7.346z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 4.909c1.44 0 2.82.427 3.895 1.141l3.682-2.855C17.68 1.49 15.09 0 12 0 7.33 0 3.323 2.69 1.34 6.623l3.926 3.142c1.435-4.214 4.724-7.346 9.458-7.346z"
-                />
-              </svg>
+          
+              
               Google
             </Button>
             <Button
