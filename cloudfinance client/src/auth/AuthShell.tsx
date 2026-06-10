@@ -85,7 +85,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
 
         if (signInError) {
           signInError.message = "Network Error"
-          console.error("Error signiing up:", signInError?.message);
+          console.error("Error signing up:", signInError?.message);
           message.error({
             duration: 4,
             content: signInError.message,
@@ -358,7 +358,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
           >
             Or {register ? "Sign Up" : "log In"} with
           </Divider>
-          <div className="flex justify-center gap-3 mb-3">
+          <div className="flex justify-center">
             <Button
               size={register ? "middle" : "large"}
               className="flex flex-1 items-center justify-center hover:bg-slate-50 transition-colors gap-2 border border-slate-200 rounded-md text-sm font-medium cursor-pointer"
@@ -370,20 +370,7 @@ export default function AuthShell({ mode }: { mode: "register" | "login" }) {
               
               Google
             </Button>
-            <Button
-              size={register ? "middle" : "large"}
-              className="flex flex-1 rounded-lg py-2 hover:bg-slate-50 transition-colors cursor-pointer items-center justify-center border border-slate-200 gap-2 "
-            >
-              {/* Apple Logo */}
-              <svg
-                className={`${register ? "h-3 w-3" : "h-4 w-4"} fill-current`}
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M12.152 6.896c-.494 0-1.487-.557-2.428-.538-1.24.018-2.383.72-3.02 1.826-1.285 2.228-.329 5.525.917 7.323.61.88 1.332 1.861 2.285 1.824.918-.037 1.265-.593 2.373-.593s1.42.593 2.392.574c1 .019 1.62-.898 2.227-1.787.703-1.028.992-2.023 1.01-2.073-.02-.01-1.947-.747-1.967-2.964-.017-1.862 1.52-2.757 1.593-2.803-.872-1.275-2.223-1.42-2.7-1.455-1.21-.098-2.14.594-2.48.594zm1.99-2.22c.49-.594.82-1.42.73-2.246-.707.028-1.566.472-2.073 1.066-.453.52-.85 1.356-.74 2.172.788.062 1.593-.4 2.083-.992z" />
-              </svg>
-              <span>Apple</span>
-            </Button>
+            
           </div>
 
           <div className={`${register ? "mt-2" : "mt-4"}`}>
