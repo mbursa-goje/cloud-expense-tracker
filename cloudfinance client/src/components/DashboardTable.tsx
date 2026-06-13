@@ -148,17 +148,17 @@ export default function DashboardTable<ElementType extends { id: string }>({
     try {
       const values = form.getFieldsValue();
 
-    await onEdit(editingRecord.id, values);
-    // use parent's callback
-    // await editMutation.mutateAsync({
-    //   id: editingTransaction.id,
-    //   updates: values,
-    // })
+      await onEdit(editingRecord.id, values);
+      // use parent's callback
+      // await editMutation.mutateAsync({
+      //   id: editingTransaction.id,
+      //   updates: values,
+      // })
 
-    setIsEditing(false);
+      setIsEditing(false);
     } catch (error) {
       // throw new Error(error);
-      console.error("Edit failed:", error)
+      console.error("Edit failed:", error);
     }
   };
 
@@ -248,25 +248,26 @@ export default function DashboardTable<ElementType extends { id: string }>({
           <div className="">
             <Input
               prefix={<Search className="text-slate-400" size={16} />}
-              size="middle"
+              // isMobile ? size="middle" : size="large"
+              size="small"
               placeholder={searchPlaceholder}
               type="text"
               name="search"
-              className="h-7! p-3 w-64 flex-1"
+              className="h-7! p-2"
               value={(currentFilters.search as string) ?? ""}
               onChange={(event) => handleSearch(event.target.value)}
             ></Input>
           </div>
 
-         <div className="w-30">
-           <FilterButton
-            filterItems={filterItems ?? []}
-            filterField={filterField ?? ""}
-            onClick={(newFilter) =>
-              onFilterChange({ ...currentFilters, ...newFilter })
-            }
-          />
-         </div>
+          <div className="w-30">
+            <FilterButton
+              filterItems={filterItems ?? []}
+              filterField={filterField ?? ""}
+              onClick={(newFilter) =>
+                onFilterChange({ ...currentFilters, ...newFilter })
+              }
+            />
+          </div>
         </div>
       </div>
       <Table
@@ -274,13 +275,13 @@ export default function DashboardTable<ElementType extends { id: string }>({
         dataSource={data}
         loading={isLoading}
         rowKey="id"
+        scroll={{ x: 50,  }}
       />
       <Modal
         open={isEditing}
         onCancel={() => setIsEditing(false)}
         onOk={handleSave}
         title="Edit Item"
-      
       >
         <Form form={form} layout="vertical">
           {editableFields.map(({ name, label }) => (

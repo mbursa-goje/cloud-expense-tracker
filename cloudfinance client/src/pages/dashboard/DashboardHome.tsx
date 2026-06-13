@@ -5,7 +5,7 @@ import SideMenu from "../../components/SideMenu";
 import PageContent from "../../components/PageContent";
 // import Footer from "../../components/Footer";
 
-export default function DashboardHome({ session }: {session: Session}) {
+export default function DashboardHome({ session }: {session: Session | null}) {
   const { isMobile } = useScreenSize();
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen">

@@ -6,14 +6,14 @@ import { useScreenSize } from "../context/screen/use-screen-size";
 import "../index.css";
 import type { Session } from "@supabase/supabase-js";
 
-export default function SideMenu({ session }: { session: Session }) {
+export default function SideMenu({ session }: { session: Session | null }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { isMobile } = useScreenSize();
   return (
     <div
-      className={`bg-[#fafafa] flex md:pt-3 gap-1 flex-col w-full  ${isMobile ? `fixed z-50 ` : `h-screen border-r border-slate-200 `} top-0 left-0`}
+      className={`bg-[#fafafa] md:flex md:pt-3 gap-1 flex-col w-full  ${isMobile ? `fixed z-50 ` : `h-screen border-r border-slate-200 `} top-0 left-0`}
     >
       <div className="flex justify-between items-center bg-[#fafafa]">
         <div
@@ -26,7 +26,7 @@ export default function SideMenu({ session }: { session: Session }) {
             <div>
               <User2 size={16} className="text-(--primary)" />
             </div>
-            <div>{session.user.user_metadata?.fullName ?? "User"}</div>
+            <div className="hidden md:flex">{session?.user.user_metadata?.fullName ?? "User"}</div>
           </div>
 
           <div className="flex items-center gap-1">
